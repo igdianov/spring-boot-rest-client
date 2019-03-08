@@ -1,22 +1,33 @@
 package io.github.polysantiago.spring.rest;
 
-import io.github.polysantiago.spring.rest.RestClientListenableFutureAsyncTest.ListenableFutureAsyncFooClient;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.*;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
-import org.springframework.web.bind.annotation.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import io.github.polysantiago.spring.rest.RestClientListenableFutureAsyncTest.ListenableFutureAsyncFooClient;
 
 public class RestClientListenableFutureAsyncTest extends AbstractRestClientAsyncTest<ListenableFutureAsyncFooClient> {
 
@@ -29,7 +40,7 @@ public class RestClientListenableFutureAsyncTest extends AbstractRestClientAsync
     @Mock
     private ListenableFutureCallback<Optional<String>> callback;
 
-    @RestClient(value = "localhost", url = "${localhost.uri}")
+    @RestClient(value = "ListenableFutureAsyncFooClient", url = "${localhost.uri}")
     interface ListenableFutureAsyncFooClient extends AbstractRestClientAsyncTest.AsyncFooClient {
 
         @Override

@@ -1,6 +1,15 @@
 package io.github.polysantiago.spring.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.client.MockRestServiceServer.createServer;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
+import java.util.Optional;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,13 +41,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.client.MockRestServiceServer.createServer;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -52,7 +55,7 @@ public class RestClientHateoasTest {
 
     @Configuration
     @EnableAutoConfiguration
-    @EnableRestClients(basePackageClasses = FooClient.class)
+    @EnableRestClients(basePackageClasses = HateoasFooClient.class)
     @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
     static class ContextConfiguration {
 
@@ -77,8 +80,8 @@ public class RestClientHateoasTest {
 
     }
 
-    @RestClient(value = "localhost", url = "${localhost.uri}")
-    interface FooClient {
+    @RestClient(value = "HateoasFooClient", url = "${localhost.uri}")
+    interface HateoasFooClient {
 
         @GetMapping(value = SINGLE_RESOURCE, produces = MediaTypes.HAL_JSON_VALUE)
         FooResource getFoo(@PathVariable("id") String id);
@@ -100,7 +103,7 @@ public class RestClientHateoasTest {
     private PropertyPlaceholderHelper helper = new PropertyPlaceholderHelper("{", "}");
 
     @Autowired
-    private FooClient fooClient;
+    private HateoasFooClient fooClient;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -179,7 +182,6 @@ public class RestClientHateoasTest {
     @Test
     public void testOptionalCollectionResource_found() throws Exception {
         mockServerHalResponse(OPTIONAL_COLLECTION_RESOURCE, fooResourcesJson);
-
         Optional<Resources<FooResource>> optionalFoos = fooClient.getOptionalFoos();
 
         assertThat(optionalFoos).isPresent();

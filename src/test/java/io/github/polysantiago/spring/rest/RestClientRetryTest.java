@@ -1,5 +1,15 @@
 package io.github.polysantiago.spring.rest;
 
+import static org.springframework.test.web.client.MockRestServiceServer.bindTo;
+import static org.springframework.test.web.client.MockRestServiceServer.createServer;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
+import java.io.IOException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,40 +30,32 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-
-import static org.springframework.test.web.client.MockRestServiceServer.bindTo;
-import static org.springframework.test.web.client.MockRestServiceServer.createServer;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
-
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class RestClientRetryTest {
 
     @Autowired
-    private FooClient fooClient;
+    private FooRetryClient fooClient;
 
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${spring.rest.client.services.localhost}")
+    @Value("${spring.rest.client.services.FooRetryClient}")
     private String requestUrl;
 
     private MockRestServiceServer server;
 
     @Configuration
     @EnableAutoConfiguration
-    @EnableRestClients(basePackageClasses = FooClient.class)
+    @EnableRestClients(basePackageClasses = FooRetryClient.class)
     @EnableRetry
     protected static class TestConfiguration {
 
     }
 
-    @RestClient(name = "localhost", retryOn = {HttpStatus.SERVICE_UNAVAILABLE}, retryOnException = {ResourceAccessException.class})
-    interface FooClient {
+    @RestClient(name = "FooRetryClient", retryOn = {HttpStatus.SERVICE_UNAVAILABLE}, retryOnException = {ResourceAccessException.class})
+    interface FooRetryClient {
 
         @RequestMapping
         Void foo();
