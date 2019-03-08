@@ -1,10 +1,14 @@
 Spring Boot Rest Client
 =======
 
-[![Build Status](https://travis-ci.org/polysantiago/spring-boot-rest-client.svg?branch=master)](https://travis-ci.org/polysantiago/spring-boot-rest-client)
+[![Build Status](https://travis-ci.org/igdianov/spring-boot-rest-client.svg?branch=master)](https://travis-ci.org/igdianov/spring-boot-rest-client)
+<!--
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.polysantiago/spring-boot-rest-client/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.polysantiago/spring-boot-rest-client)
 [![GitHub issues](https://img.shields.io/github/issues/polysantiago/spring-boot-rest-client.svg)](https://github.com/polysantiago/spring-boot-rest-client/issues)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/polysantiago/spring-boot-rest-client/master/LICENSE)
+-->
+
+## Note: This a fork of  polysantiago/spring-boot-rest-client ported to Maven and upgraded to latest Spring Boot 2+ Release
 
 This library was born as an effort to avoid boilerplate code and making use of Spring Boot's auto-configuration features.
 
