@@ -1,14 +1,17 @@
 package io.github.polysantiago.spring.rest.retry;
 
-import io.github.polysantiago.spring.rest.RestClientProperties;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.retry.interceptor.RetryOperationsInterceptor;
 
-@RequiredArgsConstructor
+import io.github.polysantiago.spring.rest.RestClientProperties;
+
 public class RetryOperationsInterceptorFactory extends AbstractFactoryBean<RetryOperationsInterceptor> {
 
     private final RestClientProperties restClientProperties;
+
+    public RetryOperationsInterceptorFactory(RestClientProperties restClientProperties) {
+    	this.restClientProperties = restClientProperties;
+    }
 
     @Override
     public Class<?> getObjectType() {
@@ -19,5 +22,6 @@ public class RetryOperationsInterceptorFactory extends AbstractFactoryBean<Retry
     protected RetryOperationsInterceptor createInstance() throws Exception {
         return new RetryInterceptor(restClientProperties.getRetry()).buildInterceptor();
     }
+
 
 }

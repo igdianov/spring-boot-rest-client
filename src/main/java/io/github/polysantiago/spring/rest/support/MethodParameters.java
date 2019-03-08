@@ -1,17 +1,15 @@
 package io.github.polysantiago.spring.rest.support;
 
-import lombok.Getter;
-import org.springframework.core.DefaultParameterNameDiscoverer;
-import org.springframework.core.MethodParameter;
-import org.springframework.util.Assert;
+import static java.util.stream.Collectors.toList;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static java.util.stream.Collectors.toList;
+import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.MethodParameter;
+import org.springframework.util.Assert;
 
-@Getter
 public class MethodParameters {
 
     private final List<MethodParameter> parameters;
@@ -23,5 +21,9 @@ public class MethodParameters {
             .peek(parameter -> parameter.initParameterNameDiscovery(new DefaultParameterNameDiscoverer()))
             .collect(toList());
     }
+
+	public List<MethodParameter> getParameters() {
+		return parameters;
+	}
 
 }

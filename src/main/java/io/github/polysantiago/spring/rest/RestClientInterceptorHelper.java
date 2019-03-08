@@ -10,16 +10,13 @@ import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.springframework.http.MediaType.parseMediaType;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
-import io.github.polysantiago.spring.rest.support.MethodParameters;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -30,6 +27,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.RequestEntity.BodyBuilder;
+import org.springframework.lang.NonNull;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +38,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import io.github.polysantiago.spring.rest.support.MethodParameters;
+
 class RestClientInterceptorHelper {
 
     private static final TypeDescriptor STRING_TYPE_DESCRIPTOR = TypeDescriptor.valueOf(String.class);
@@ -49,11 +49,19 @@ class RestClientInterceptorHelper {
     private final List<MethodParameter> methodParameters;
     private final Object[] arguments;
 
-    @Setter
-    @Accessors(fluent = true)
     private FormattingConversionService conversionService = new DefaultFormattingConversionService();
 
-    static RestClientInterceptorHelper from(MethodInvocation methodInvocation) {
+    public FormattingConversionService getConversionService() {
+		return conversionService;
+	}
+
+	public RestClientInterceptorHelper conversionService(FormattingConversionService conversionService) {
+		this.conversionService = conversionService;
+		
+		return this;
+	}
+
+	static RestClientInterceptorHelper from(MethodInvocation methodInvocation) {
         return new RestClientInterceptorHelper(methodInvocation);
     }
 

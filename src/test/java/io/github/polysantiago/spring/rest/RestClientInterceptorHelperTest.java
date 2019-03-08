@@ -6,8 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
 import java.net.URI;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Test;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,8 +44,6 @@ public class RestClientInterceptorHelperTest {
 
     }
 
-    @Getter
-    @RequiredArgsConstructor
     private class MockMethodInvocation implements MethodInvocation {
         private final Method method;
         private final Object[] arguments;
@@ -65,5 +62,20 @@ public class RestClientInterceptorHelperTest {
         public AccessibleObject getStaticPart() {
             return null;
         }
+
+		protected MockMethodInvocation(Method method, Object[] arguments) {
+			this.method = method;
+			this.arguments = arguments;
+		}
+
+		@Override
+		public Object[] getArguments() {
+			return arguments;
+		}
+
+		@Override
+		public Method getMethod() {
+			return method;
+		}
     }
 }

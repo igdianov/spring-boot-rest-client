@@ -2,10 +2,9 @@ package io.github.polysantiago.spring.rest.util;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import lombok.experimental.UtilityClass;
+
 import org.springframework.core.ResolvableType;
 
-@UtilityClass
 public class ResolvableTypeUtils {
 
     public static boolean typeIsAnyOf(ResolvableType resolvableType, Class<?>... classes) {

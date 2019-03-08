@@ -1,27 +1,35 @@
 package io.github.polysantiago.spring.rest;
 
-import io.github.polysantiago.spring.rest.util.ResolvableTypeUtils;
-import lombok.RequiredArgsConstructor;
+import static net.javacrumbs.futureconverter.springjava.FutureConverter.toCompletableFuture;
+
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.concurrent.CompletableFuture;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.http.RequestEntity;
 import org.springframework.util.concurrent.ListenableFuture;
 
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.concurrent.CompletableFuture;
+import io.github.polysantiago.spring.rest.util.ResolvableTypeUtils;
 
-import static net.javacrumbs.futureconverter.springjava.FutureConverter.toCompletableFuture;
-
-@RequiredArgsConstructor
 class RestClientInterceptor implements MethodInterceptor {
 
-    private final SyncRequestHelper syncRequestHelper;
+
+	private final SyncRequestHelper syncRequestHelper;
     private final AsyncRequestHelper asyncRequestHelper;
     private final FormattingConversionService conversionService;
     private final URI serviceUrl;
 
+    public RestClientInterceptor(SyncRequestHelper syncRequestHelper, AsyncRequestHelper asyncRequestHelper,
+    		FormattingConversionService conversionService, URI serviceUrl) {
+    	this.syncRequestHelper = syncRequestHelper;
+    	this.asyncRequestHelper = asyncRequestHelper;
+    	this.conversionService = conversionService;
+    	this.serviceUrl = serviceUrl;
+    }
+    
     void setRetryEnabled(boolean retryEnabled) {
         syncRequestHelper.setRetryEnabled(true);
     }

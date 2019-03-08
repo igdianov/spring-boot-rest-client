@@ -22,17 +22,20 @@ import org.springframework.web.client.RestTemplate;
 import io.github.polysantiago.spring.rest.retry.RetryableException;
 import io.github.polysantiago.spring.rest.support.SyntheticParametrizedTypeReference;
 import io.github.polysantiago.spring.rest.util.ResolvableTypeUtils;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
-@RequiredArgsConstructor
 class SyncRequestHelper {
 
     private final RestClientSpecification specification;
     private final RestTemplate restTemplate;
     private final Class<?> implementingClass;
+    
+	public SyncRequestHelper(RestClientSpecification specification, RestTemplate restTemplate,
+			Class<?> implementingClass) {
+		this.specification = specification;
+		this.restTemplate = restTemplate;
+		this.implementingClass = implementingClass;
+	}    
 
-    @Setter
     private boolean retryEnabled;
 
     <T> Object executeRequest(MethodInvocation invocation, RequestEntity<T> requestEntity) {
@@ -102,4 +105,14 @@ class SyncRequestHelper {
     private static <T> boolean anyMatch(T[] array, Predicate<T> predicate) {
         return Stream.of(array).anyMatch(predicate);
     }
+
+	public boolean isRetryEnabled() {
+		return retryEnabled;
+	}
+
+	public void setRetryEnabled(boolean retryEnabled) {
+		this.retryEnabled = retryEnabled;
+	}
+
+
 }

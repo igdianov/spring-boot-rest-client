@@ -1,8 +1,24 @@
 package io.github.polysantiago.spring.rest;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import static java.util.Collections.singleton;
+import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.lang3.ArrayUtils.isEmpty;
+import static org.springframework.util.Assert.state;
+import static org.springframework.util.StringUtils.hasText;
+
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -20,30 +36,11 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
+import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
-import static java.util.Collections.singleton;
-import static java.util.stream.Collectors.toSet;
-import static org.apache.commons.lang3.ArrayUtils.isEmpty;
-import static org.springframework.util.Assert.state;
-import static org.springframework.util.StringUtils.hasText;
-
-@Setter
 class RestClientsRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, BeanClassLoaderAware {
 
     private ClassLoader beanClassLoader;
@@ -216,12 +213,15 @@ class RestClientsRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoa
     /**
      * Helper class to create a {@link TypeFilter} that matches if all the delegates match.
      */
-    @RequiredArgsConstructor
     private static class AllTypeFilter implements TypeFilter {
 
         @NonNull
         private final List<TypeFilter> delegates;
 
+        public AllTypeFilter(List<TypeFilter> delegates) {
+        	this.delegates = delegates;
+        }
+        
         @Override
         public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) throws IOException {
             for (TypeFilter filter : this.delegates) {
@@ -231,5 +231,22 @@ class RestClientsRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoa
             }
             return true;
         }
+
     }
+
+	public ClassLoader getBeanClassLoader() {
+		return beanClassLoader;
+	}
+
+	public void setBeanClassLoader(ClassLoader beanClassLoader) {
+		this.beanClassLoader = beanClassLoader;
+	}
+
+	public ResourceLoader getResourceLoader() {
+		return resourceLoader;
+	}
+
+	public void setResourceLoader(ResourceLoader resourceLoader) {
+		this.resourceLoader = resourceLoader;
+	}
 }

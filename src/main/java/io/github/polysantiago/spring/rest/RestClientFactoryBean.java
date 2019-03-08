@@ -1,7 +1,11 @@
 package io.github.polysantiago.spring.rest;
 
-import lombok.Getter;
-import lombok.Setter;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
+import java.net.URI;
+import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -15,13 +19,6 @@ import org.springframework.util.Assert;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-
-@Setter
 class RestClientFactoryBean<T> implements FactoryBean<T>, InitializingBean, ApplicationContextAware {
 
     private static final String PREFERRED_CONVERSION_SERVICE = "mvcConversionService";
@@ -30,13 +27,42 @@ class RestClientFactoryBean<T> implements FactoryBean<T>, InitializingBean, Appl
     private String name;
 
     private String url;
-
-    @Getter
+    
     private Class<T> objectType;
-
+    
     private ApplicationContext applicationContext;
+    
+    public String getName() {
+		return name;
+	}
 
-    @Override
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+
+    public Class<T> getObjectType() {
+		return objectType;
+	}
+
+
+    public ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
+
+	@Override
     public void afterPropertiesSet() throws Exception {
         Assert.hasText(this.name, "Name must be set");
     }
@@ -102,5 +128,9 @@ class RestClientFactoryBean<T> implements FactoryBean<T>, InitializingBean, Appl
     public boolean isSingleton() {
         return true;
     }
+
+	public void setObjectType(Class<T> objectType) {
+		this.objectType = objectType;
+	}
 
 }

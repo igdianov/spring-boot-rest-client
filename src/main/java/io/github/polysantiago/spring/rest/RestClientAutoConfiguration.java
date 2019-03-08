@@ -21,17 +21,19 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import io.github.polysantiago.spring.rest.retry.RetryOperationsInterceptorFactory;
-import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableConfigurationProperties(RestClientProperties.class)
 @ConditionalOnBean(annotation = {EnableRestClients.class})
 @AutoConfigureAfter(WebMvcAutoConfiguration.class)
-@RequiredArgsConstructor
 public class RestClientAutoConfiguration {
 
     private final List<RestClientSpecification> specifications;
 
+	public RestClientAutoConfiguration(List<RestClientSpecification> specifications) {
+		this.specifications = specifications;
+	}
+    
     @Bean
     @ConditionalOnMissingBean
     public RestTemplate restClientTemplate(RestTemplateBuilder builder) {
@@ -81,5 +83,6 @@ public class RestClientAutoConfiguration {
     public RestClientContext restClientContext(RestClientProperties properties) {
         return new RestClientContext(specifications, properties.getServices());
     }
+
 
 }

@@ -1,18 +1,23 @@
 package io.github.polysantiago.spring.rest;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.apache.commons.lang3.StringUtils;
 
-import java.net.URI;
-import java.util.*;
-
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
 class RestClientContext {
 
     private List<RestClientSpecification> specifications = new ArrayList<>();
     private Map<String, Object> services = new HashMap<>();
 
+	RestClientContext(List<RestClientSpecification> specifications, Map<String, Object> services) {
+		this.specifications = specifications;
+		this.services = services;
+	}    
     RestClientSpecification findByRestClientName(String name) {
         return specifications
             .stream()
@@ -27,4 +32,6 @@ class RestClientContext {
             .map(URI::create)
             .orElseThrow(() -> new IllegalStateException("Invalid URL for service " + name));
     }
+
+
 }

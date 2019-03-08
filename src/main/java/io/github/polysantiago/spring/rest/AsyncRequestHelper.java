@@ -1,12 +1,12 @@
 package io.github.polysantiago.spring.rest;
 
 
-import io.github.polysantiago.spring.rest.support.SyntheticParametrizedTypeReference;
-import io.github.polysantiago.spring.rest.util.LocationFutureAdapter;
-import io.github.polysantiago.spring.rest.util.OptionalTypeFutureAdapter;
-import io.github.polysantiago.spring.rest.util.ResolvableTypeUtils;
-import io.github.polysantiago.spring.rest.util.ResponseFutureAdapter;
-import lombok.RequiredArgsConstructor;
+import static io.github.polysantiago.spring.rest.support.SyntheticParametrizedTypeReference.fromResolvableType;
+
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.Optional;
+
 import org.springframework.core.ResolvableType;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpEntity;
@@ -15,18 +15,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.client.AsyncRestTemplate;
 
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.Optional;
+import io.github.polysantiago.spring.rest.support.SyntheticParametrizedTypeReference;
+import io.github.polysantiago.spring.rest.util.LocationFutureAdapter;
+import io.github.polysantiago.spring.rest.util.OptionalTypeFutureAdapter;
+import io.github.polysantiago.spring.rest.util.ResolvableTypeUtils;
+import io.github.polysantiago.spring.rest.util.ResponseFutureAdapter;
 
-import static io.github.polysantiago.spring.rest.support.SyntheticParametrizedTypeReference.fromResolvableType;
-
-@RequiredArgsConstructor
 class AsyncRequestHelper {
 
     private final AsyncRestTemplate asyncRestTemplate;
     private final Class<?> implementingClass;
 
+	public AsyncRequestHelper(AsyncRestTemplate asyncRestTemplate, Class<?> implementingClass) {
+		this.asyncRestTemplate = asyncRestTemplate;
+		this.implementingClass = implementingClass;
+	}
+    
     <T> ListenableFuture<?> executeAsyncRequest(Method method, RequestEntity<T> requestEntity) {
         ResolvableType resolvedType = ResolvableType.forMethodReturnType(method, implementingClass).getGeneric(0);
 
@@ -57,7 +61,15 @@ class AsyncRequestHelper {
         return asyncRestTemplate.exchange(requestEntity.getUrl(), requestEntity.getMethod(), requestEntity, responseType);
     }
 
-    private static void checkWrappedReturnTypeIsUri(ResolvableType resolvableType) {
+    public AsyncRestTemplate getAsyncRestTemplate() {
+		return asyncRestTemplate;
+	}
+
+	public Class<?> getImplementingClass() {
+		return implementingClass;
+	}
+
+	private static void checkWrappedReturnTypeIsUri(ResolvableType resolvableType) {
         if (!ResolvableTypeUtils.typeIs(resolvableType, URI.class)) {
             throw new RuntimeException("Method annotated with @PostForLocation must return URI");
         }

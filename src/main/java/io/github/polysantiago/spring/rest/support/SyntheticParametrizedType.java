@@ -6,10 +6,9 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import lombok.Getter;
+
 import org.springframework.core.ResolvableType;
 
-@Getter
 public final class SyntheticParametrizedType implements ParameterizedType, Serializable {
 
     private static final long serialVersionUID = -521679299810654826L;
@@ -41,5 +40,13 @@ public final class SyntheticParametrizedType implements ParameterizedType, Seria
         return String.format("%s<%s<%s>>", SyntheticParametrizedType.class.getName(), rawType.getTypeName(),
             Arrays.stream(actualTypeArguments).map(Type::getTypeName).collect(joining(",")));
     }
+
+	public Type getRawType() {
+		return rawType;
+	}
+
+	public Type[] getActualTypeArguments() {
+		return actualTypeArguments;
+	}
 
 }
