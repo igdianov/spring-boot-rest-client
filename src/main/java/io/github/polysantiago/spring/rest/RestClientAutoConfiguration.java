@@ -19,7 +19,6 @@ import org.springframework.retry.interceptor.RetryOperationsInterceptor;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import io.github.polysantiago.spring.rest.retry.RetryOperationsInterceptorFactory;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +49,7 @@ public class RestClientAutoConfiguration {
 
     @Bean
     public WebMvcConfigurer restClientWebMvcConfigurer(RestClientProperties properties) {
-        return new WebMvcConfigurerAdapter() {
+        return new WebMvcConfigurer() {
             @Override
             public void addFormatters(FormatterRegistry registry) {
                 DateTimeFormatterRegistrar dateTimeFormatterRegistrar = new DateTimeFormatterRegistrar();
