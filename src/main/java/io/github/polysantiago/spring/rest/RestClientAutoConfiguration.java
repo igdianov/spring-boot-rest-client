@@ -1,11 +1,11 @@
 package io.github.polysantiago.spring.rest;
 
-import io.github.polysantiago.spring.rest.retry.RetryOperationsInterceptorFactory;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +21,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import java.util.List;
+import io.github.polysantiago.spring.rest.retry.RetryOperationsInterceptorFactory;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableConfigurationProperties(RestClientProperties.class)
