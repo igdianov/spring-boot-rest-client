@@ -1,7 +1,28 @@
 package io.github.polysantiago.spring.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.polysantiago.spring.rest.AbstractRestClientAsyncTest.AsyncFooClient;
+import static java.util.Collections.singletonList;
+import static org.apache.commons.lang3.StringUtils.toEncodedString;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Fail.fail;
+import static org.springframework.test.web.client.MockRestServiceServer.createServer;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withCreatedEntity;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
@@ -13,7 +34,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -25,22 +51,9 @@ import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static java.util.Collections.singletonList;
-import static org.apache.commons.lang3.StringUtils.toEncodedString;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Fail.fail;
-import static org.springframework.test.web.client.MockRestServiceServer.createServer;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
+import io.github.polysantiago.spring.rest.AbstractRestClientAsyncTest.AsyncFooClient;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -155,7 +168,7 @@ public abstract class AbstractRestClientAsyncTest<T extends AsyncFooClient> {
             getResponse(fooClient.fooObject());
             fail("Should get NOT FOUND");
         } catch (ExecutionException executionException) {
-            assertThat(executionException).hasCauseExactlyInstanceOf(HttpClientErrorException.class);
+            assertThat(executionException).hasCauseExactlyInstanceOf(HttpClientErrorException.NotFound.class);
         }
     }
 
@@ -198,7 +211,7 @@ public abstract class AbstractRestClientAsyncTest<T extends AsyncFooClient> {
             getResponse(fooClient.bar("some-body"));
             fail("Should have gotten Exception");
         } catch (ExecutionException executionException) {
-            assertThat(executionException).hasCauseExactlyInstanceOf(HttpServerErrorException.class);
+            assertThat(executionException).hasCauseExactlyInstanceOf(HttpServerErrorException.InternalServerError.class);
         }
     }
 
@@ -251,7 +264,7 @@ public abstract class AbstractRestClientAsyncTest<T extends AsyncFooClient> {
             getResponse(fooClient.defaultFoo());
             fail("Should have gotten exception");
         } catch (ExecutionException executionException) {
-            assertThat(executionException).hasCauseExactlyInstanceOf(HttpServerErrorException.class);
+            assertThat(executionException).hasCauseExactlyInstanceOf(HttpServerErrorException.ServiceUnavailable.class);
         }
     }
 

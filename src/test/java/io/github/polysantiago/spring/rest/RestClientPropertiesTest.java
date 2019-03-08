@@ -1,16 +1,17 @@
 package io.github.polysantiago.spring.rest;
 
-import io.github.polysantiago.spring.rest.retry.BackOffSettings;
-import io.github.polysantiago.spring.rest.retry.RetrySettings;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.util.EnvironmentTestUtils.addEnvironment;
+import io.github.polysantiago.spring.rest.retry.BackOffSettings;
+import io.github.polysantiago.spring.rest.retry.RetrySettings;
 
 public class RestClientPropertiesTest {
 
@@ -32,8 +33,9 @@ public class RestClientPropertiesTest {
 
     @Test
     public void testMaxAttempts() throws Exception {
-        addEnvironment(this.context, "spring.rest.client.retry.max-attempts:5");
-
+    	TestPropertyValues.of("spring.rest.client.retry.max-attempts=5")
+	                      .applyTo(this.context);    	
+    	
         registerAndRefresh();
 
         assertProperties(getProperties(), 5, 1000L, 0L, 0.0d, false);
@@ -41,11 +43,12 @@ public class RestClientPropertiesTest {
 
     @Test
     public void testBackOffSettings() throws Exception {
-        addEnvironment(this.context, "spring.rest.client.retry.back-off.delay:2000");
-        addEnvironment(this.context, "spring.rest.client.retry.back-off.max-delay:10000");
-        addEnvironment(this.context, "spring.rest.client.retry.back-off.multiplier:2.5");
-        addEnvironment(this.context, "spring.rest.client.retry.back-off.random:true");
-
+    	TestPropertyValues.of("spring.rest.client.retry.back-off.delay=2000")
+    		.and("spring.rest.client.retry.back-off.max-delay=10000")
+    		.and("spring.rest.client.retry.back-off.multiplier=2.5")
+    		.and("spring.rest.client.retry.back-off.random=true")
+    		.applyTo(this.context);    	
+        
         registerAndRefresh();
 
         assertProperties(getProperties(), 3, 2000L, 10000L, 2.5d, true);

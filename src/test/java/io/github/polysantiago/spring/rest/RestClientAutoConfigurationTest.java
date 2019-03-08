@@ -1,5 +1,7 @@
 package io.github.polysantiago.spring.rest;
 
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -11,8 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
 
 public class RestClientAutoConfigurationTest {
 
@@ -81,7 +81,7 @@ public class RestClientAutoConfigurationTest {
 
     }
 
-    @RestClient(value = "localhost", url = "http://someserver")
+    @RestClient(value = "TestClient", url = "http://someserver")
     interface TestClient {
 
         @GetMapping("str")

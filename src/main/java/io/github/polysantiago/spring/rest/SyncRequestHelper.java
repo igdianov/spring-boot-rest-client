@@ -1,11 +1,14 @@
 package io.github.polysantiago.spring.rest;
 
 
-import io.github.polysantiago.spring.rest.retry.RetryableException;
-import io.github.polysantiago.spring.rest.support.SyntheticParametrizedTypeReference;
-import io.github.polysantiago.spring.rest.util.ResolvableTypeUtils;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCause;
+
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -16,13 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
-import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCause;
+import io.github.polysantiago.spring.rest.retry.RetryableException;
+import io.github.polysantiago.spring.rest.support.SyntheticParametrizedTypeReference;
+import io.github.polysantiago.spring.rest.util.ResolvableTypeUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @RequiredArgsConstructor
 class SyncRequestHelper {
@@ -71,6 +72,9 @@ class SyncRequestHelper {
 
         if (ResolvableTypeUtils.returnTypeIsAnyOf(method, HttpEntity.class, ResponseEntity.class)) {
             return exchangeForResponseEntity(resolvedType, requestEntity);
+        } 
+        else if (ResolvableTypeUtils.returnTypeIsAnyOf(method, Optional.class)) {
+            return Optional.ofNullable(exchangeForResponseEntity(resolvedType, requestEntity).getBody());
         }
         SyntheticParametrizedTypeReference<T> responseType = SyntheticParametrizedTypeReference.fromResolvableType(resolvedType);
         return extractBodyNullSafe(restTemplate.exchange(requestEntity, responseType));

@@ -1,16 +1,21 @@
 package io.github.polysantiago.spring.rest;
 
-import io.github.polysantiago.spring.rest.RestClientCompletableFutureAsyncTest.CompletableFutureAsyncFooClient;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import io.github.polysantiago.spring.rest.RestClientCompletableFutureAsyncTest.CompletableFutureAsyncFooClient;
 
 public class RestClientCompletableFutureAsyncTest extends AbstractRestClientAsyncTest<CompletableFutureAsyncFooClient> {
 
@@ -20,7 +25,7 @@ public class RestClientCompletableFutureAsyncTest extends AbstractRestClientAsyn
 
     }
 
-    @RestClient(value = "localhost", url = "${localhost.uri}")
+    @RestClient(value = "CompletableFutureAsyncFooClient", url = "${localhost.uri}")
     interface CompletableFutureAsyncFooClient extends AbstractRestClientAsyncTest.AsyncFooClient {
 
         @Override
